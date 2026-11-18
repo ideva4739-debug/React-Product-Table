@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "./App.css";
+import { supabase } from "./supabaseClient";
 
 function ProductTable() {
   const [products, setProducts] = useState([]);
@@ -14,25 +15,44 @@ function ProductTable() {
   const [currentPage, setCurrentPage] = useState(1);
   const [productsPerPage, setProductsPerPage] = useState(7);
 
-  useEffect(() => {
-    axios
-      .get("https://dummyjson.com/products?limit=100")
-      .then((res) => {
+  // useEffect(() => {
+  //   axios
+  //     .get("https://dummyjson.com/products?limit=100")
+  //     .then((res) => {
 
-        // console.log(res);
-        let data = res.data.products;
+  //       // console.log(res);
+  //       let data = res.data.products;
 
-        let thousandProducts = [];
+  //       let thousandProducts = [];
 
-        for (let i = 0; i < 1000; i++) {
-          thousandProducts.push({ ...data[i % data.length], id: i + 1 });
-        }
-        setProducts(thousandProducts);
-        // console.log(thousandProducts);
+  //       for (let i = 0; i < 1000; i++) {
+  //         thousandProducts.push({ ...data[i % data.length], id: i + 1 });
+  //       }
+  //       setProducts(thousandProducts);
+  //       // console.log(thousandProducts);
 
-      })
-      .catch((error) => console.error("API error:", error));
-  }, []);
+  //     })
+  //     .catch((error) => console.error("API error:", error));
+  // }, []);
+
+
+useEffect(() => {
+  async function getProducts() {
+    const { data, error } = await supabase
+      .from("products")
+      .select("*");
+
+    if (error) {
+      console.error("Error fetching products:", error.message);
+      return;
+    }
+
+    setProducts(data);
+  }
+
+  getProducts();
+}, []);
+
 
 
   let filteredProducts = products.filter((product) => {
@@ -46,14 +66,13 @@ function ProductTable() {
         .includes(search.toLowerCase());
 
 
-    // const dateMatch =
-    //   date === "" ||
-    //   new Date(product.meta.createdAt)
-    //     .toLocaleDateString() ===
-    //   new Date(date).toLocaleDateString();
+    const dateMatch =
+      date === "" ||
+      (product.created_at &&
+    new Date(product.created_at).toLocaleDateString() ===
+      new Date(date).toLocaleDateString());
 
-
-    return searchMatch;
+    return searchMatch && dateMatch;
 
 
     // const categoryMatch =
@@ -106,19 +125,14 @@ function ProductTable() {
     filteredProducts.sort((a, b) => b.rating - a.rating);
   }
 
-  // else if (sort === "date-low") {
-  //   filteredProducts.sort(
-  //     (a, b) =>
-  //       new Date(a.meta.createdAt) -
-  //       new Date(b.meta.createdAt)
-  //   );
-  // } else if (sort === "date-high") {
-  //   filteredProducts.sort(
-  //     (a, b) =>
-  //       new Date(b.meta.createdAt) -
-  //       new Date(a.meta.createdAt)
-  //   );
-  // }
+  else if (sort === "date-low") {
+    filteredProducts.sort(
+      (a, b) => new Date(a.created_at) - new Date(b.created_at) );
+      
+  } else if (sort === "date-high") {
+    filteredProducts.sort(
+      (a, b) =>  new Date(b.created_at) - new Date(a.created_at) );
+  }
 
 
 
@@ -266,9 +280,15 @@ function ProductTable() {
 
       </div>
 
-      <div className="table-wrapper">
+      {/* <div className="table-wrapper">
 
-        <table className="product-table">
+        <table className="product-table"> */}
+
+  <div className="desktop-table">
+
+     <div className="table-wrapper">
+
+    <table className="product-table">
 
           <thead>
             <tr>
@@ -345,11 +365,11 @@ function ProductTable() {
                 <div className="header-title">
                   Date
 
-                  {/* <button
+                   <button
                     className="sort-btn"
                     onClick={handleDateSort}>
                     {getArrow("date")}
-                  </button> */}
+                  </button>
 
                 </div>
 
@@ -366,7 +386,6 @@ function ProductTable() {
           </thead>
 
           <tbody>
-            {/* <div className="product-grid">
             {currentProducts.length > 0 ? (
               currentProducts.map((product) => (
                 <tr key={product.id}>
@@ -376,7 +395,7 @@ function ProductTable() {
                   </td>
 
                   <td className="img">
-                    <img src={product.thumbnail} alt={product.title}  width="px" height=""/>
+                    <img src={product.thumbnail} alt={product.title}  width="25px" height=""/>
                   </td>
 
                   <td className="product-name">
@@ -398,9 +417,9 @@ function ProductTable() {
                   </td>
 
                   <td className="date-cell">
-                    {new Date(
-                      product.meta.createdAt
-                    ).toLocaleDateString()}
+                    {product.created_at ?
+                     new Date( product.created_at
+                    ).toLocaleDateString() :  "N/A"}
                   </td>
 
                 </tr>
@@ -410,58 +429,77 @@ function ProductTable() {
               <tr>
 
                 <td
-                  colSpan="6"
+                  colSpan="7"
                   className="no-products">
                   No products found
                 </td>
                 
               </tr>
             )}
-
-            </div> */}
-
-            <div className="product-grid">
-  {currentProducts.map((product) => (
-    <div className="product-card" key={product.id}>
-
-      <div className="product-image">
-        <img
-          src={product.thumbnail}
-          alt={product.title}
-        />
-      </div>
-
-      <div className="product-details">
-
-        <h3>{product.title}</h3>
-
-        <p className="category">
-          {product.category}
-        </p>
-
-        <p className="rating">
-          ⭐ {product.rating}
-        </p>
-
-        <p className="price">
-          ₹{(product.price * 90).toFixed(0)}
-        </p>
-
-        <p className="stock">
-          {product.stock > 0
-            ? `${product.stock} available`
-            : "Out of stock"}
-        </p>
-
-      </div>
-
-    </div>
-  ))}
-</div>
           </tbody>
 
         </table>
+
+        </div>
+
+        </div>
+
+      {/* Mobile Product List */}
+
+<div className="mobile-products">
+
+  {currentProducts.length > 0 ? (
+
+    currentProducts.map((product) => (
+
+      <div className="mobile-product-card" key={product.id}>
+
+        <div className="mobile-product-image">
+          <img
+            src={product.thumbnail}
+            alt={product.title}
+          />
+        </div>
+
+        <div className="mobile-product-details">
+
+          <div>
+           <b>{product.title}</b>
+          </div>
+
+          <div>
+             <b>{product.category}</b>
+          </div>
+
+          <div>
+            <b>₹{(product.price * 90).toFixed(0)}</b>
+          </div>
+
+          <div>
+            <b>{product.rating}</b>
+          </div>
+
+        </div>
+
+        {/* <button className="mobile-cart-btn">
+          Add to Cart 
+        </button>  */}
+
       </div>
+
+    ))
+
+  ) : (
+
+    <div className="mobile-no-products">
+      No products found
+    </div>
+
+  )}
+
+</div>
+
+
 
       <div className="table-footer">
         Showing {currentProducts.length} of{" "}
