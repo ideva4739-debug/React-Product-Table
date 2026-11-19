@@ -1,16 +1,45 @@
-# React + Vite
+# React Product Table
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A responsive product management application built using React.js, JavaScript, CSS, and Supabase.
 
-Currently, two official plugins are available:
+## Project Description
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+React Product Table is a web application that helps users view and manage product information in an organized way. It provides a clean interface with search, sorting, filtering, and pagination features.
 
-## React Compiler
+The application uses Supabase to connect with a backend database and manage product information. The responsive design makes the application accessible on desktops, tablets, and mobile devices.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Features
 
-## Expanding the ESLint configuration
+- **Product Listing:** Displays product information in an organized table.
+- **Search:** Search for products using product names.
+- **Filtering:** Filter products based on categories.
+- **Sorting:** Sort products based on price, name, and rating.
+- **Pagination:** Navigate through product records across multiple pages.
+- **Supabase Integration:** Connects the application to Supabase for product data.
+- **Responsive Design:** Supports desktop and mobile screens.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Technologies Used
+
+- HTML5
+- CSS3
+- JavaScript (ES6+)
+- React.js
+- Supabase
+- Axios (if used in the project)
+
+## Learning Outcomes
+
+Through this project, I gained practical experience in React components, state management, API integration, Supabase database connectivity, and responsive web design.
+
+I also improved my understanding of JavaScript, React Hooks, search functionality, sorting, filtering, and pagination.
+
+## Getting Started
+
+1. Clone the repository.
+2. Install dependencies using `npm install`.
+3. Configure your Supabase environment variables.
+4. Start the development server using `npm run dev`.
+
+## Author
+
+Deva
